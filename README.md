@@ -22,6 +22,31 @@ A complete, ready-to-use Python project for Raspberry Pi Zero that:
 - **`QUICK_START.md`** - Step-by-step setup guide (start here!)
 - **`TROUBLESHOOTING.md`** - Comprehensive troubleshooting guide
 - **`CUSTOMIZATION_EXAMPLES.md`** - Configuration examples for different use cases
+- **`HIGH_SCHOOL_GUIDE.md`** - Student-friendly guide for high school projects
+- **`TESTING_GUIDE.md`** - Comprehensive testing instructions
+
+### Testing Tools (NEW! 🧪)
+- **`check_environment.py`** - Verify all packages are installed
+- **`validate_code.py`** - Check code for syntax errors
+- **`test_simulation.py`** - Test without Raspberry Pi hardware
+
+## 🧪 Test Before Deploying (Recommended!)
+
+**For high school projects or development:**
+
+```bash
+# Step 1: Check environment
+python3 check_environment.py
+
+# Step 2: Validate code
+python3 validate_code.py
+
+# Step 3: Run simulation
+python3 test_simulation.py
+```
+
+This lets you test everything **without Raspberry Pi hardware**!
+See **`HIGH_SCHOOL_GUIDE.md`** for detailed testing instructions.
 
 ## 🚀 Quick Start (3 Steps)
 

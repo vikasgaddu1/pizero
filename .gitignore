@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment variables
+.env
+
+# Image captures
+captured_images/
+
+# Test files
+test.wav
+test.jpg
+debug.log
+
+# OS
+.DS_Store
+Thumbs.db
