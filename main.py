@@ -213,12 +213,15 @@ class VisionAssistant:
             
             # Convert bytes to PIL Image for Gemini
             optimized_image = Image.open(io.BytesIO(optimized_bytes))
-            
-            original_size = len(io.BytesIO())
-            image.save(io.BytesIO(), format='JPEG')
+
+            # Calculate original size for comparison
+            original_buffer = io.BytesIO()
+            image.save(original_buffer, format='JPEG')
+            original_size = len(original_buffer.getvalue())
             optimized_size = len(optimized_bytes)
-            
-            print(f"Image optimized: {optimized_size / 1024:.1f} KB")
+
+            reduction_percent = ((original_size - optimized_size) / original_size * 100) if original_size > 0 else 0
+            print(f"Image optimized: {optimized_size / 1024:.1f} KB (reduced by {reduction_percent:.1f}%)")
             
             # Generate description
             print("Analyzing image with Gemini...")
