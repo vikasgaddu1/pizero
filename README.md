@@ -3,12 +3,13 @@
 ## 🎯 What This Is
 
 A complete, ready-to-use Python project for Raspberry Pi Zero that:
-- ✅ Listens for voice keyword "click"
+- ✅ Listens for voice keyword "click" with optional custom requests
+- ✅ **Voice-controlled prompts** - Say what you want: "click read the prescription" or "click what ingredients are in this"
 - ✅ Captures image with Pi Camera
 - ✅ Optimizes and compresses image
 - ✅ Analyzes image using Google Gemini API with intelligent context detection
 - ✅ **Reads medication labels** - dosage, warnings, expiration dates, instructions
-- ✅ Adapts response based on content (medications, food labels, documents, general objects)
+- ✅ Adapts response based on both user request AND image content
 - ✅ Speaks the description through Audio DAC Hat
 
 ## 📦 What's Included
@@ -81,6 +82,48 @@ sudo reboot
 cd ~/ai-vision-assistant
 python3 main.py
 ```
+
+## 🎤 Voice Commands
+
+### Basic Usage
+Simply say the keyword to capture and analyze:
+```
+"click"
+```
+The AI will automatically detect what's in the image and provide relevant information.
+
+### Custom Requests
+Tell the AI what you want to focus on:
+
+**Medication Labels:**
+```
+"click read the prescription"
+"click what's the dosage"
+"click read the medication label"
+```
+
+**Food & Nutrition:**
+```
+"click what ingredients are in this"
+"click check for allergens"
+"click what's the nutrition info"
+```
+
+**Documents & Text:**
+```
+"click read this document"
+"click read this letter"
+"click what does this form say"
+```
+
+**General Questions:**
+```
+"click what is this"
+"click describe this"
+"click tell me about this"
+```
+
+The AI will tailor its response to your specific request!
 
 ## 📋 Hardware Requirements
 

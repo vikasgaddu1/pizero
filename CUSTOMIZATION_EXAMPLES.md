@@ -33,6 +33,58 @@ class Config:
 
 ---
 
+## Dynamic Voice Prompts (NEW!)
+
+The system now supports custom voice requests! Instead of just saying "click", you can tell the AI what you want:
+
+### How It Works
+The AI analyzes your spoken request and tailors its response:
+
+```
+User says: "click read the prescription"
+→ AI focuses on medication info: name, dosage, warnings, expiration
+
+User says: "click what ingredients are in this"
+→ AI focuses on food ingredients, allergens, nutrition info
+
+User says: "click read this document"
+→ AI extracts and reads text from the document
+
+User says: "click what is this"
+→ AI provides a general description and context
+```
+
+### Supported Request Types
+
+**Medication/Prescription Keywords:**
+- prescription, medication, medicine, pill, drug, dosage, dose
+
+**Food/Nutrition Keywords:**
+- food, ingredients, nutrition, allergen, eat, calories
+
+**Document/Text Keywords:**
+- read, document, letter, text, form, paper
+
+**General Keywords:**
+- what, identify, describe, tell me
+
+### Example Voice Commands
+
+| What You Say | What AI Does |
+|--------------|--------------|
+| "click" | Auto-detects content type and provides relevant info |
+| "click read the prescription to me" | Reads medication label with dosage and warnings |
+| "click what's the dosage" | Focuses specifically on dosage information |
+| "click check for allergens" | Looks for allergen warnings on food labels |
+| "click what ingredients are in this" | Lists food ingredients |
+| "click read this letter" | Extracts and reads text from documents |
+| "click what is this object" | Provides general description |
+
+### No Code Changes Needed!
+The dynamic prompt system works out of the box. Just speak naturally and tell the AI what you need!
+
+---
+
 ## Use Case Examples
 
 ### 1. Security Camera Mode

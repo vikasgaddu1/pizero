@@ -80,8 +80,14 @@ The system will:
 ### Voice Commands
 | Command | Action |
 |---------|--------|
-| "click" | Capture and analyze image |
+| "click" | Capture and auto-analyze image |
+| "click read the prescription" | Focus on medication label |
+| "click what ingredients" | Focus on food/ingredients |
+| "click read this document" | Focus on text reading |
+| "click what is this" | General description |
 | "exit" or "quit" | Stop the program |
+
+**Pro Tip**: You can add custom requests after "click" to tell the AI what you want to focus on!
 
 ### Best Practices
 - **Speak clearly** and at normal volume

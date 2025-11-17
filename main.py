@@ -191,41 +191,68 @@ class VisionAssistant:
             print(f"Error capturing image: {e}")
             raise
     
-    def analyze_image(self, image: Image.Image) -> str:
+    def _build_prompt(self, user_request: str = None) -> str:
         """
-        Analyze image using Gemini API
-        
+        Build dynamic prompt based on user request
+
         Args:
-            image: PIL Image object
-            
+            user_request: Optional specific user request
+
         Returns:
-            Description text from Gemini
+            Tailored prompt string
         """
-        try:
-            print("Optimizing image for analysis...")
-            
-            # Optimize image
-            optimized_bytes = ImageOptimizer.optimize_image(
-                image,
-                max_size=self.config.MAX_IMAGE_SIZE,
-                quality=self.config.JPEG_QUALITY
-            )
-            
-            # Convert bytes to PIL Image for Gemini
-            optimized_image = Image.open(io.BytesIO(optimized_bytes))
+        if user_request:
+            # Analyze user intent from their request
+            request_lower = user_request.lower()
 
-            # Calculate original size for comparison
-            original_buffer = io.BytesIO()
-            image.save(original_buffer, format='JPEG')
-            original_size = len(original_buffer.getvalue())
-            optimized_size = len(optimized_bytes)
+            # Medication/prescription focused
+            if any(word in request_lower for word in ['prescription', 'medication', 'medicine', 'pill', 'drug', 'dosage', 'dose']):
+                return """Read and analyze this medication label or prescription. Provide:
+- Medication name (brand and generic)
+- Dosage and strength
+- Instructions for use (how often, when to take, with/without food)
+- Important warnings and precautions
+- Expiration date
+- Active ingredients
+- Any other critical safety information
 
-            reduction_percent = ((original_size - optimized_size) / original_size * 100) if original_size > 0 else 0
-            print(f"Image optimized: {optimized_size / 1024:.1f} KB (reduced by {reduction_percent:.1f}%)")
-            
-            # Generate description
-            print("Analyzing image with Gemini...")
-            prompt = """Analyze this image and provide relevant information based on what you see.
+Be clear, accurate, and thorough. This is safety-critical information."""
+
+            # Food/nutrition focused
+            elif any(word in request_lower for word in ['food', 'ingredients', 'nutrition', 'allergen', 'eat', 'calories']):
+                return """Analyze this food product label. Provide:
+- Product name and type
+- Key ingredients (especially first 5)
+- Allergen warnings (nuts, dairy, gluten, etc.)
+- Nutritional highlights (calories, protein, sugar, etc.)
+- Expiration or best-by date
+- Serving size information
+
+Focus on health and safety relevant information."""
+
+            # Document/text reading
+            elif any(word in request_lower for word in ['read', 'document', 'letter', 'text', 'form', 'paper']):
+                return """Read and extract the text from this document. Provide:
+- Main heading or title
+- Key information and important text
+- Any dates, numbers, or critical details
+- Structure (sections, bullet points, etc.)
+
+Read it clearly as if reading aloud to someone."""
+
+            # General identification
+            elif any(word in request_lower for word in ['what', 'identify', 'describe', 'tell me']):
+                return f"""The user asked: "{user_request}"
+
+Analyze this image and answer their question. Provide relevant information about:
+- What you see in the image
+- Key details that answer their question
+- Any important context or information
+
+Be helpful, clear, and focused on what the user asked."""
+
+        # Default intelligent prompt if no specific request
+        return """Analyze this image and provide relevant information based on what you see.
 
 MEDICATION LABELS - If this is a medication bottle, prescription label, pill bottle, or pharmaceutical product:
 - Medication name (brand and generic if visible)
@@ -260,7 +287,49 @@ GENERAL OBJECTS - For other items:
 - Relevant context or usage information
 
 IMPORTANT: Be concise, clear, and prioritize safety-critical information first (especially for medications). Speak naturally as if helping someone who cannot see the image."""
-            
+
+    def analyze_image(self, image: Image.Image, user_request: str = None) -> str:
+        """
+        Analyze image using Gemini API
+
+        Args:
+            image: PIL Image object
+            user_request: Optional user's specific request (e.g., "read the prescription")
+
+        Returns:
+            Description text from Gemini
+        """
+        try:
+            print("Optimizing image for analysis...")
+
+            # Optimize image
+            optimized_bytes = ImageOptimizer.optimize_image(
+                image,
+                max_size=self.config.MAX_IMAGE_SIZE,
+                quality=self.config.JPEG_QUALITY
+            )
+
+            # Convert bytes to PIL Image for Gemini
+            optimized_image = Image.open(io.BytesIO(optimized_bytes))
+
+            # Calculate original size for comparison
+            original_buffer = io.BytesIO()
+            image.save(original_buffer, format='JPEG')
+            original_size = len(original_buffer.getvalue())
+            optimized_size = len(optimized_bytes)
+
+            reduction_percent = ((original_size - optimized_size) / original_size * 100) if original_size > 0 else 0
+            print(f"Image optimized: {optimized_size / 1024:.1f} KB (reduced by {reduction_percent:.1f}%)")
+
+            # Generate description
+            print("Analyzing image with Gemini...")
+
+            # Build prompt based on user request
+            prompt = self._build_prompt(user_request)
+
+            if user_request:
+                print(f"User requested: '{user_request}'")
+
             response = self.gemini_model.generate_content([prompt, optimized_image])
             
             description = response.text
@@ -274,27 +343,27 @@ IMPORTANT: Be concise, clear, and prioritize safety-critical information first (
     
     def listen_for_keyword(self) -> str:
         """
-        Listen for voice keyword
-        
+        Listen for voice keyword and optional command
+
         Returns:
             Recognized text (lowercase)
         """
         with sr.Microphone(device_index=self.config.MICROPHONE_INDEX) as source:
             print("\nListening for keyword...")
-            
+
             # Adjust for ambient noise
             self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
-            
+
             try:
-                # Listen with timeout
-                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=3)
-                
+                # Listen with longer timeout to capture full commands like "click: read the prescription"
+                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
+
                 # Recognize speech
                 text = self.recognizer.recognize_google(audio).lower()
                 print(f"Heard: '{text}'")
-                
+
                 return text
-                
+
             except sr.WaitTimeoutError:
                 return ""
             except sr.UnknownValueError:
@@ -304,22 +373,26 @@ IMPORTANT: Be concise, clear, and prioritize safety-critical information first (
                 print(f"Speech recognition error: {e}")
                 return ""
     
-    def process_capture_command(self):
-        """Process a capture command: take photo, analyze, and speak result"""
+    def process_capture_command(self, user_request: str = None):
+        """Process a capture command: take photo, analyze, and speak result
+
+        Args:
+            user_request: Optional specific user request (e.g., "read the prescription")
+        """
         try:
             # Give audio feedback
             self.speak("Taking picture")
-            
+
             # Capture image
             image, filepath = self.capture_image()
-            
-            # Analyze image
+
+            # Analyze image with user's request
             self.speak("Analyzing")
-            description = self.analyze_image(image)
-            
+            description = self.analyze_image(image, user_request)
+
             # Speak result
             self.speak(description)
-            
+
         except Exception as e:
             error_msg = "Sorry, I encountered an error processing the image"
             print(f"Error in process_capture_command: {e}")
@@ -331,27 +404,44 @@ IMPORTANT: Be concise, clear, and prioritize safety-critical information first (
         print("AI Vision Assistant Started")
         print("="*50)
         print(f"Say '{self.config.KEYWORD}' to capture and analyze an image")
+        print(f"Say '{self.config.KEYWORD} [request]' for specific analysis")
+        print("Examples:")
+        print(f"  - '{self.config.KEYWORD} read the prescription'")
+        print(f"  - '{self.config.KEYWORD} what ingredients are in this'")
+        print(f"  - '{self.config.KEYWORD} read this document'")
         print(f"Say 'exit' or 'quit' to stop")
         print("="*50 + "\n")
-        
+
         self.speak("AI Vision Assistant ready")
-        
+
         try:
             while True:
                 # Listen for keyword
                 text = self.listen_for_keyword()
-                
+
                 # Check for exit command
                 if any(exit_word in text for exit_word in self.config.EXIT_KEYWORDS):
                     print("Exit command received")
                     self.speak("Goodbye")
                     break
-                
+
                 # Check for trigger keyword
                 if self.config.KEYWORD in text:
                     print(f"\n>>> Keyword '{self.config.KEYWORD}' detected! <<<\n")
-                    self.process_capture_command()
-                    
+
+                    # Extract user request if present
+                    # Remove the keyword and any following colons/whitespace
+                    user_request = None
+                    if len(text) > len(self.config.KEYWORD):
+                        # Extract text after keyword
+                        request_part = text[text.index(self.config.KEYWORD) + len(self.config.KEYWORD):].strip()
+                        # Remove common separators like ":" or "-"
+                        request_part = request_part.lstrip(':').lstrip('-').strip()
+                        if request_part:
+                            user_request = request_part
+
+                    self.process_capture_command(user_request)
+
         except KeyboardInterrupt:
             print("\nInterrupted by user")
         finally:
