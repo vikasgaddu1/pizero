@@ -8,9 +8,14 @@ Perfect for development and testing before deployment!
 
 import io
 import sys
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 from PIL import Image
 import os
+
+# Add parent directory to path so we can import pizero
+parent_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(parent_dir))
 
 # Create mock .env file if it doesn't exist
 if not os.path.exists('.env'):
@@ -46,13 +51,13 @@ mock_tts_instance = MagicMock()
 mock_tts.init.return_value = mock_tts_instance
 sys.modules['pyttsx3'] = mock_tts
 
-# Now import the actual main module
-print("\nStep 2: Importing main.py...")
+# Now import the actual pizero package
+print("\nStep 2: Importing pizero package...")
 try:
-    import main
-    print("  ✓ main.py imported successfully!")
+    import pizero
+    print("  ✓ pizero package imported successfully!")
 except Exception as e:
-    print(f"  ✗ Error importing main.py: {e}")
+    print(f"  ✗ Error importing pizero package: {e}")
     sys.exit(1)
 
 # Test individual components
@@ -61,7 +66,7 @@ print("\nStep 3: Testing individual components...")
 # Test Config class
 print("\n--- Testing Configuration ---")
 try:
-    config = main.Config()
+    config = pizero.Config()
     print(f"  ✓ Config loaded")
     print(f"    - Keyword: '{config.KEYWORD}'")
     print(f"    - Exit keywords: {config.EXIT_KEYWORDS}")
@@ -82,7 +87,7 @@ try:
     print(f"  Created test image: {test_image.size}")
 
     # Optimize it
-    optimized_bytes = main.ImageOptimizer.optimize_image(
+    optimized_bytes = pizero.ImageOptimizer.optimize_image(
         test_image,
         max_size=1024,
         quality=85
@@ -126,7 +131,7 @@ try:
         with patch('google.generativeai.configure'), \
              patch('google.generativeai.GenerativeModel'):
 
-            assistant = main.VisionAssistant(config)
+            assistant = pizero.VisionAssistant(config)
             print("  ✓ VisionAssistant initialized successfully!")
             print("    - Camera: Mocked ✓")
             print("    - Speech recognizer: Mocked ✓")
@@ -188,10 +193,12 @@ except Exception as e:
 print("\n--- Syntax Validation ---")
 try:
     import py_compile
-    py_compile.compile('main.py', doraise=True)
-    print("  ✓ main.py syntax is valid!")
+    package_dir = Path(__file__).parent.parent / 'pizero'
+    for py_file in package_dir.glob('*.py'):
+        py_compile.compile(str(py_file), doraise=True)
+    print("  ✓ All package files syntax is valid!")
 except py_compile.PyCompileError as e:
-    print(f"  ✗ Syntax error in main.py: {e}")
+    print(f"  ✗ Syntax error: {e}")
     sys.exit(1)
 
 # Check all imports

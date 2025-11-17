@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pizero-vision-assistant"
+version = "1.0.0"
+description = "AI Vision Assistant for Raspberry Pi Zero - Voice-controlled image analysis"
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "MIT"}
+keywords = ["raspberry-pi", "vision", "ai", "gemini", "voice-control", "accessibility"]
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Multimedia :: Graphics :: Capture :: Digital Camera",
+]
+dependencies = [
+    "Pillow>=10.0.0",
+    "google-generativeai>=0.3.0",
+    "python-dotenv>=1.0.0",
+    "SpeechRecognition>=3.10.0",
+    "pyttsx3>=2.90",
+]
+
+[project.optional-dependencies]
+pi = [
+    "picamera2",
+    "pyaudio",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-mock>=3.10.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/vikasgaddu1/pizero"
+"Bug Reports" = "https://github.com/vikasgaddu1/pizero/issues"
+Source = "https://github.com/vikasgaddu1/pizero"
+
+[project.scripts]
+pizero-vision = "pizero.cli:main"
+
+[tool.setuptools]
+packages = ["pizero"]
+
+[tool.setuptools.package-data]
+pizero = ["py.typed"]
