@@ -1,7 +1,7 @@
 # AI Vision Assistant - Raspberry Pi Zero Project
 
 ## Project Overview
-A voice-activated AI vision system that captures images when triggered by a keyword, analyzes them using Google's Gemini API, and speaks the description aloud.
+A voice-activated AI vision system that captures images when triggered by a keyword, intelligently analyzes them using Google's Gemini API with context detection, and speaks the description aloud. The system automatically detects medication labels, food packaging, documents, or general objects and provides relevant information accordingly.
 
 ## Hardware Requirements
 
@@ -63,8 +63,13 @@ aplay test.wav
 - **Voice Activation**: Listens for keyword "click" to trigger image capture
 - **Image Capture**: Takes high-quality photos using Pi Camera
 - **Image Optimization**: Compresses and resizes images for efficient API usage
-- **AI Analysis**: Uses Gemini Vision API to describe the scene
+- **Intelligent AI Analysis**: Uses Gemini Vision API with context-aware detection:
+  - **Medication Labels**: Reads drug names, dosages, warnings, expiration dates, and instructions
+  - **Food Labels**: Identifies ingredients, nutrition info, and allergen warnings
+  - **Documents**: Extracts key text, dates, and important information
+  - **General Objects**: Provides relevant descriptions and context
 - **Voice Output**: Speaks the analysis results through connected speaker
+- **Safety Priority**: Prioritizes critical information like medication warnings and dosages
 - **Low Resource Usage**: Optimized for Pi Zero's limited hardware
 
 ### Image Optimization

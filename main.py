@@ -225,15 +225,41 @@ class VisionAssistant:
             
             # Generate description
             print("Analyzing image with Gemini...")
-            prompt = """Please describe what you see in this image in detail. 
-            Focus on:
-            - Main objects and subjects
-            - Actions or activities happening
-            - Setting and environment
-            - Notable colors, patterns, or features
-            - Overall scene or context
-            
-            Provide a clear, natural description as if you're describing the scene to someone who can't see it."""
+            prompt = """Analyze this image and provide relevant information based on what you see.
+
+MEDICATION LABELS - If this is a medication bottle, prescription label, pill bottle, or pharmaceutical product:
+- Medication name (brand and generic if visible)
+- Dosage and strength (e.g., "500 mg", "10 ml")
+- Instructions for use (e.g., "Take twice daily with food")
+- Important warnings or precautions
+- Expiration date if visible
+- Active ingredients
+- Prescription number if visible
+- Any critical safety information
+Format this clearly and read it in a way that's easy to understand when spoken aloud.
+
+FOOD LABELS - If this is food packaging or nutrition label:
+- Product name and type
+- Key ingredients
+- Nutritional highlights
+- Allergen warnings
+- Expiration or best-by date
+- Serving information
+
+DOCUMENTS/TEXT - If this contains text, forms, or documents:
+- Main heading or title
+- Key information or important text
+- Any dates, numbers, or critical details
+- Purpose of the document
+
+GENERAL OBJECTS - For other items:
+- What the object is
+- Its purpose or function
+- Notable features or condition
+- Any text, labels, or markings visible
+- Relevant context or usage information
+
+IMPORTANT: Be concise, clear, and prioritize safety-critical information first (especially for medications). Speak naturally as if helping someone who cannot see the image."""
             
             response = self.gemini_model.generate_content([prompt, optimized_image])
             

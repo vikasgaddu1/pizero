@@ -6,7 +6,9 @@ A complete, ready-to-use Python project for Raspberry Pi Zero that:
 - ✅ Listens for voice keyword "click"
 - ✅ Captures image with Pi Camera
 - ✅ Optimizes and compresses image
-- ✅ Analyzes image using Google Gemini API
+- ✅ Analyzes image using Google Gemini API with intelligent context detection
+- ✅ **Reads medication labels** - dosage, warnings, expiration dates, instructions
+- ✅ Adapts response based on content (medications, food labels, documents, general objects)
 - ✅ Speaks the description through Audio DAC Hat
 
 ## 📦 What's Included
@@ -104,9 +106,11 @@ python3 main.py
 - Exit commands supported
 
 ### Smart Image Analysis
-- AI-powered scene understanding
-- Detailed descriptions
-- Context-aware responses
+- AI-powered scene understanding with context detection
+- Automatically detects medication labels, food packaging, documents, or general objects
+- Prioritizes safety-critical information (dosages, warnings, expiration dates)
+- Provides relevant information based on what it sees
+- Natural, spoken-friendly descriptions
 
 ### Professional Code Quality
 - Clean, documented code
@@ -139,14 +143,16 @@ python3 main.py
 
 ## 🎯 Use Cases
 
-This project can be adapted for:
+This project intelligently adapts to what it sees:
 
+- 💊 **Medication Safety** - Reads prescription labels, dosages, warnings, and expiration dates
+- ♿ **Accessibility** - Helps visually impaired users read labels and identify objects
+- 📋 **Document Reading** - Reads forms, letters, and printed text aloud
+- 🍱 **Food Labels** - Reads ingredients, nutrition info, and allergen warnings
+- 📦 **Inventory** - Product identification and text extraction
+- 📚 **Education** - Learning tool for children and students
 - 🔒 **Security** - Motion-activated surveillance
-- 📚 **Education** - Learning tool for children
-- ♿ **Accessibility** - Visual assistance
-- 📦 **Inventory** - Product identification
 - 🌿 **Gardening** - Plant identification
-- 🍳 **Cooking** - Ingredient recognition
 - 🏠 **Home Automation** - Scene monitoring
 
 See `CUSTOMIZATION_EXAMPLES.md` for specific configurations.
